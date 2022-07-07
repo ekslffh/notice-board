@@ -1,4 +1,4 @@
-package com.example.noticeborder;
+package com.example.notice_board;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

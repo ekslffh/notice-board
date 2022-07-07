@@ -1,6 +1,7 @@
-package com.example.noticeborder.repository;
+package com.example.notice_board.repository;
 
-import com.example.noticeborder.entity.PostEntity;
+import com.example.notice_board.post.entity.PostEntity;
+import com.example.notice_board.post.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

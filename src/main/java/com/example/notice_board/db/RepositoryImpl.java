@@ -1,4 +1,6 @@
-package com.example.noticeborder;
+package com.example.notice_board.db;
+
+import com.example.notice_board.post.entity.PostEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,21 +21,28 @@ public class RepositoryImpl<T extends BasicEntity> implements RepositoryIfs<T> {
             entity.setUpdatedAt(LocalDateTime.now());
         }
         // update
-        else entity.setUpdatedAt(LocalDateTime.now());
-
+        else {
+            var optionalEntity = findById(entity.getId());
+            if (optionalEntity.isPresent()) {
+                repository.remove(optionalEntity.get());
+                entity.setCreatedAt(optionalEntity.get().getCreatedAt());
+                entity.setUpdatedAt(LocalDateTime.now());
+            }
+            else return null;
+        }
         repository.add(entity);
         return entity;
     }
 
     @Override
-    public Optional<T> get(Long id) {
-        var entity = repository.stream().filter(t->(t.getId() == id)).findFirst();
+    public Optional<T> findById(Long id) {
+        var entity = repository.stream().filter(t->(t.getId().equals(id))).findFirst();
         return entity;
     }
 
     @Override
     public void delete(Long id) {
-        var entity = get(id);
+        var entity = findById(id);
         entity.ifPresent(t -> repository.remove(t));
     }
 

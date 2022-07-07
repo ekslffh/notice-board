@@ -1,4 +1,4 @@
-package com.example.noticeborder;
+package com.example.notice_board.db;
 
 import lombok.Data;
 import java.time.LocalDateTime;

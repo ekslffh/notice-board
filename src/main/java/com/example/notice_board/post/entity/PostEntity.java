@@ -1,8 +1,6 @@
-package com.example.noticeborder.entity;
+package com.example.notice_board.post.entity;
 
-import com.example.noticeborder.BasicEntity;
-
-import java.time.LocalDateTime;
+import com.example.notice_board.db.BasicEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
