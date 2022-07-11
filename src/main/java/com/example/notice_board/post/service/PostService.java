@@ -1,58 +1,54 @@
 package com.example.notice_board.post.service;
 
-import com.example.notice_board.post.dto.PostDto;
+import com.example.notice_board.post.dto.PostRequest;
+import com.example.notice_board.post.dto.PostResponse;
 import com.example.notice_board.post.entity.PostEntity;
 import com.example.notice_board.post.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class PostService {
+    private final PostRepository repository;
 
-    @Autowired
-    private PostRepository postRepository;
-
-    public void save(PostDto postDto) {
-        postRepository.save(dtoToEntity(postDto));
+    public PostResponse add(PostRequest request) {
+        PostEntity entity = PostEntity.builder()
+                            .title(request.getTitle())
+                            .content(request.getContent())
+                            .createdAt(LocalDateTime.now())
+                            .updatedAt(LocalDateTime.now())
+                            .build();
+        return PostResponse.entityToResponse(repository.save(entity));
     }
 
-    public PostDto findById(Long id) {
-        Optional<PostEntity> optionalEntity = postRepository.findById(id);
+    public PostResponse searchById(Long id) {
+        Optional<PostEntity> optionalEntity = repository.findById(id);
+        return optionalEntity.map(PostResponse::entityToResponse).orElse(null);
+    }
+
+    public PostResponse updateById(Long id, PostRequest request) {
+        Optional<PostEntity> optionalEntity = repository.findById(id);
         if (optionalEntity.isPresent()) {
-            return entityToDto(optionalEntity.get());
+            PostEntity entity = optionalEntity.get();
+            if (request.getTitle() != null) entity.setTitle(request.getTitle());
+            if (request.getContent() != null) entity.setContent(request.getContent());
+            entity.setUpdatedAt(LocalDateTime.now());
+            return PostResponse.entityToResponse(repository.save(entity));
         }
         else return null;
     }
 
-    public List<PostEntity> findAll() { return postRepository.findAll();}
+    public List<PostResponse> findAll() { return repository.findAll().stream().map(PostResponse::entityToResponse).collect(Collectors.toList());}
 
-    public void delete(Long id) {
-        postRepository.delete(id);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    public void deleteAll() { postRepository.deleteAll(); }
-
-    public PostDto entityToDto(PostEntity entity) {
-        return PostDto.builder()
-                .id(entity.getId())
-                .title(entity.getTitle())
-                .content(entity.getContent())
-                .createdAt(entity.getCreatedAt())
-                .updatedAt(entity.getUpdatedAt())
-                .build();
-    }
-
-    public PostEntity dtoToEntity(PostDto dto) {
-        PostEntity entity = PostEntity.builder()
-                .title(dto.getTitle())
-                .content(dto.getContent())
-                .build();
-        if (dto.getId() != null) entity.setId(dto.getId());
-
-        return entity;
-    }
+    public void deleteAll() { repository.deleteAll(); }
 
 }

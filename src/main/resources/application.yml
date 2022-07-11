@@ -2,8 +2,3 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-
-Post:
-  Security:
-    id: "post-security"
-    password: "1234"
